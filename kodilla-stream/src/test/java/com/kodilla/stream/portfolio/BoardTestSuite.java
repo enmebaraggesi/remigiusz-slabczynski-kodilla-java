@@ -82,6 +82,28 @@ class BoardTestSuite {
         assertEquals(2, longTasks);
     }
 
+    @Test
+    void testAddTaskListAverageWorkingOnTask() {
+
+        //Given
+        Board project = prepareTestData();
+
+        //When
+        List<TaskList> inProgress = new ArrayList<>();
+        inProgress.add(new TaskList("In progress"));
+        double average = project.getTaskLists().stream()
+            .filter(inProgress::contains)
+            .flatMap(tl -> tl.getTasks().stream())
+            .map(Task::getCreated)
+            .mapToInt(dateCreated -> (int) (LocalDate.now().toEpochDay() - dateCreated.toEpochDay()))
+            .average()
+            .orElse(-1);
+        double expected = 10;
+
+        //Then
+        assertEquals(expected, average);
+    }
+
     private Board prepareTestData() {
 
         //users
