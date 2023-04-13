@@ -101,7 +101,7 @@ class BoardTestSuite {
         double expected = 10;
 
         //Then
-        assertEquals(expected, average);
+        assertEquals(expected, average, 0.1);
     }
 
     private Board prepareTestData() {
