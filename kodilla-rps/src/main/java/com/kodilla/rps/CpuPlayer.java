@@ -1,13 +1,9 @@
 package com.kodilla.rps;
 
-import java.util.Random;
-
 public class CpuPlayer {
 
-    public String makeDecision(String playerMove) {
+    public String makeDecision(String playerMove, int chance) {
 
-        Random randomGenerator = new Random();
-        int chance = randomGenerator.nextInt(101);
         if (chance < 25) {         // 25% chance for drawing with player
             return playerMove;
         } else if (chance < 50) {  // 25% chance for losing to player

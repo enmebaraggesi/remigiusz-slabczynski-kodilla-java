@@ -2,35 +2,45 @@ package com.kodilla.rps;
 
 import java.util.*;
 
-import static com.kodilla.rps.PlayerHandler.*;
-
 public class GameEngine {
 
     private boolean end = false;                            // default is false, used to quit game
     private int numberOfRounds;                             // set by player, used in repetition of playRound()
     private int counter = 0;                                // initial is 1, counter of rounds played
     private int score = 0;                                  // initial is 0, player score
-    private Map<String, String> rpsMap = new HashMap<>();   // names of chosen option
+    private Map<String, String> rpsMap;                     // names of chosen options
+    private Map<String, Map<String, String>> resultsMap = new HashMap<>();  // map of possible results
+    private Random randomGenerator;
+    private PlayerHandler handler;
 
     public GameEngine() {
-        this.rpsMap.put("1", "ROCK");
-        this.rpsMap.put("2", "PAPER");
-        this.rpsMap.put("3", "SCISSORS");
+        randomGenerator = new Random();
+        handler = new PlayerHandler();
+        rpsMap = Map.of("1", "ROCK", "2", "PAPER", "3", "SCISSORS");
+        Map<String, String> resultsForOne =
+            Map.of("1", "DRAW", "2", "LOSE", "3", "WIN");
+        resultsMap.put("1", resultsForOne);
+        Map<String, String> resultsForTwo =
+            Map.of("1", "WIN", "2", "DRAW", "3", "LOSE");
+        resultsMap.put("2", resultsForTwo);
+        Map<String, String> resultsForThree =
+            Map.of("1", "LOSE", "2", "WIN", "3", "DRAW");
+        resultsMap.put("3", resultsForThree);
     }
 
     public void playGame() {                                // mechanism to play a whole game
-        askForName();
-        explainRules();
-        numberOfRounds = askForRoundsLimit();
+        handler.askForName();
+        handler.explainRules();
+        numberOfRounds = handler.askForRoundsLimit();
         //play game for number of rounds
         while (!end && counter < numberOfRounds) {
             counter++;
             playRound();
         }
         //view game summary
-        String result = prepareResult();
+        String result = prepareFinalResult();
 
-        String decision = displayScore(result, counter, score);
+        String decision = handler.displayScore(result, counter, score);
         if (decision.equals("x")) {
             quitGame();
 
@@ -41,7 +51,7 @@ public class GameEngine {
 
     public void playRound() {                               // mechanism to play a round of game
         CpuPlayer cpu = new CpuPlayer();
-        String playerDecision = askForDecision(counter, numberOfRounds);
+        String playerDecision = handler.askForDecision(counter, numberOfRounds);
 
         if (playerDecision.equals("x")) {
             if (quitGame()) {
@@ -54,49 +64,29 @@ public class GameEngine {
             }
         }
 
-        String cpuDecision = cpu.makeDecision(playerDecision);
+        int chance = randomGenerator.nextInt(100);
+        String cpuDecision = cpu.makeDecision(playerDecision, chance);
 
-        switch (playerDecision) {
-            case "1" -> {
-                if (cpuDecision.equals("1")) {
-                    roundSummary("DRAW", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else if (cpuDecision.equals("2")) {
-                    roundSummary("LOSE", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else {
-                    roundSummary("WIN", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), ++score);
-                }
-            }
-            case "2" -> {
-                if (cpuDecision.equals("2")) {
-                    roundSummary("DRAW", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else if (cpuDecision.equals("3")) {
-                    roundSummary("LOSE", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else {
-                    roundSummary("WIN", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), ++score);
-                }
-            }
-            case "3" -> {
-                if (cpuDecision.equals("3")) {
-                    roundSummary("DRAW", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else if (cpuDecision.equals("1")) {
-                    roundSummary("LOSE", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), score);
-                } else {
-                    roundSummary("WIN", rpsMap.get(playerDecision),
-                        rpsMap.get(cpuDecision), ++score);
-                }
-            }
+        processResult(playerDecision, cpuDecision);
+    }
+
+    public void processResult(String playerDecision, String cpuDecision) {  // mechanism to evaluate result of round
+
+        String result = resultsMap.get(playerDecision).get(cpuDecision);
+
+        if (result.equals("DRAW")) {
+            handler.roundSummary("DRAW", rpsMap.get(playerDecision),
+                rpsMap.get(cpuDecision), score);
+        } else if (result.equals("WIN")) {
+            handler.roundSummary("WIN", rpsMap.get(playerDecision),
+                rpsMap.get(cpuDecision), ++score);
+        } else {
+            handler.roundSummary("LOSE", rpsMap.get(playerDecision),
+                rpsMap.get(cpuDecision), score);
         }
     }
 
-    public String prepareResult() {                         // mechanism to count up final result
+    public String prepareFinalResult() {                    // mechanism to evaluate final result
 
         if (score > (numberOfRounds - score)) {
             return "WON";
@@ -109,7 +99,7 @@ public class GameEngine {
 
     public boolean quitGame() {                             // mechanism to finish game
 
-        String decision = askIfSure();
+        String decision = handler.askIfSure();
         if (decision.equals("y")) {
             end = true;
             return true;
@@ -119,13 +109,31 @@ public class GameEngine {
 
     public boolean restartGame() {                          // mechanism to restart game
 
-        String decision = askIfSure();
+        String decision = handler.askIfSure();
         if (decision.equals("y")) {
             end = false;
-            counter = 1;
+            counter = 0;
             score = 0;
             playGame();
         }
         return false;
+    }
+
+    //===================== GETTERS & SETTERS
+
+    public void setNumberOfRounds(int numberOfRounds) {
+        this.numberOfRounds = numberOfRounds;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public Map<String, String> getRpsMap() {
+        return rpsMap;
+    }
+
+    public PlayerHandler getHandler() {
+        return handler;
     }
 }
