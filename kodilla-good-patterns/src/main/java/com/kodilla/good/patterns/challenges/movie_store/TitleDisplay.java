@@ -1,7 +1,6 @@
 package com.kodilla.good.patterns.challenges.movie_store;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TitleDisplay {
 
@@ -13,10 +12,9 @@ public class TitleDisplay {
 
     public static String mergeTitlesStream(Map<String, List<String>> titleCollection) {
 
-        StringBuilder stringBuilder = new StringBuilder();
-        titleCollection.values().stream()
-                .flatMap(List<String>::stream)
-                .forEach(title -> stringBuilder.append(title).append("!"));
-        return stringBuilder.toString();
+        return (titleCollection.values().stream()
+            .flatMap(List<String>::stream)
+            .reduce((string1, string2) -> string1 + "!" + string2))
+            .orElse("");
     }
 }
