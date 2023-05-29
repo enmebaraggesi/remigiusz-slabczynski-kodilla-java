@@ -1,50 +1,45 @@
 package com.kodilla.good.patterns.challenges.flight_searcher;
 
-import java.util.*;
 import java.util.stream.Collectors;
 
 public class SearchEngine {
 
-    private Map<Airport, Set<Airport>> flights = new HashMap<>();
+    private FlightMaintenance flights;
 
-    public String collectResultsFrom(Airport departure) {
+    public SearchEngine(FlightMaintenance fights) {
+        this.flights = fights;
+    }
 
-        return flights.entrySet().stream()
-            .filter(entry -> entry.getKey().equals(departure))
-            .flatMap(entry -> entry.getValue().stream())
-            .map(airport -> airport.getName() + " [" + airport.getIataCode() + "]")
+    public String collectResultsFrom(String departure) {
+
+        return flights.getAvailableFlights().stream()
+            .filter(flight -> flight.getFrom().equals(departure))
+            .map(Flight::getTo)
             .collect(Collectors.joining(", "));
     }
 
-    public String collectResultsTo(Airport destination) {
+    public String collectResultsTo(String destination) {
 
-        return flights.entrySet().stream()
-            .filter(entry -> entry.getValue().contains(destination))
-            .map(Map.Entry::getKey)
-            .map(airport -> airport.getName() + " [" + airport.getIataCode() + "]")
+        return flights.getAvailableFlights().stream()
+            .filter(flight -> flight.getTo().equals(destination))
+            .map(Flight::getFrom)
             .collect(Collectors.joining(", "));
     }
 
-    public long collectResultsWithTransfer(Airport departure, Airport transfer, Airport destination) {
+    public long collectResultsWithTransfer(String departure, String transfer, String destination) {
 
-        long result = flights.entrySet().stream()
-            .filter(entry -> entry.getKey().equals(departure))
-            .flatMap(entry -> entry.getValue().stream())
-            .filter(airport -> airport.equals(transfer))
+        long result = flights.getAvailableFlights().stream()
+            .filter(flight -> flight.getFrom().equals(departure))
+            .filter(flight -> flight.getTo().equals(transfer))
             .count();
 
         if (result > 0) {
-            return flights.entrySet().stream()
-                .filter(entry -> entry.getKey().equals(transfer))
-                .flatMap(entry -> entry.getValue().stream())
-                .filter(airport -> airport.equals(destination))
+            return flights.getAvailableFlights().stream()
+                .filter(flight -> flight.getFrom().equals(transfer))
+                .filter(flight -> flight.getTo().equals(destination))
                 .count();
         } else {
             return result;
         }
-    }
-
-    public void updateFlights(Map<Airport, Set<Airport>> flights) {
-        this.flights = flights;
     }
 }

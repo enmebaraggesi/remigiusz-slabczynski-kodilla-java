@@ -4,22 +4,22 @@ import java.util.*;
 
 public class FlightMaintenance {
 
-    private final Map<Airport, Set<Airport>> availableFlights;
+    private final Set<Flight> availableFlights;
 
     public FlightMaintenance() {
-        this.availableFlights = new HashMap<>();
+        this.availableFlights = new HashSet<>();
     }
 
-    public void addFlight(Airport departure, Airport destination) {
+    public void addFlight(Flight flight) {
 
-        if (availableFlights.containsKey(departure)) {
-            availableFlights.get(departure).add(destination);
+        if (availableFlights.add(flight)) {
+            System.out.println("Flight successfully added");
         } else {
-            availableFlights.put(departure, new HashSet<>(Set.of(destination)));
+            System.out.println("Flight already exists");
         }
     }
 
-    public Map<Airport, Set<Airport>> getAvailableFlights() {
+    public Set<Flight> getAvailableFlights() {
         return availableFlights;
     }
 }
