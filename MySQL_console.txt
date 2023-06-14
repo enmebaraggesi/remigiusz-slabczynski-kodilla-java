@@ -1,0 +1,58 @@
+CREATE TABLE ISSUESLIST
+(
+    ID SERIAL PRIMARY KEY ,
+    NAME VARCHAR(100)
+);
+
+CREATE TABLE ISSUES
+(
+    ID SERIAL PRIMARY KEY ,
+    ISSUESLIST_ID BIGINT UNSIGNED NOT NULL ,
+    SUMMARY VARCHAR(160) NOT NULL ,
+    DESCRIPTION VARCHAR(1024) ,
+    USER_ID_ASSIGNEDTO BIGINT UNSIGNED NOT NULL ,
+    FOREIGN KEY (ISSUESLIST_ID) REFERENCES ISSUESLIST(ID) ,
+    FOREIGN KEY (USER_ID_ASSIGNEDTO) REFERENCES users(ID)
+);
+
+INSERT INTO ISSUESLIST (NAME) VALUES ("ToDo");
+INSERT INTO ISSUESLIST (NAME) VALUES ("In progress");
+INSERT INTO ISSUESLIST (NAME) VALUES ("Done");
+
+-- add few issues to To Do list
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (1, "Cleanup factory code", "Fix existing typos in Shape Factory class", 1);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (1, "Make a coffee", "This month it is your job to prepare coffee for everyone", 2);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (1, "Learn some SQL", "Watch tutorials, ask collegues, do some research", 1);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (1, "New service unit tests", "Write complete set of tests for our new service", 3);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (1, "Learn advanced manual testing", "Do your homework and excercise with collegues", 2);
+
+-- add few issues to In Progress list
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (2, "Legacy app manual testing", "Gain some knowledge about our technology", 2);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (2, "Modifications for greater efficiency", "Try to modify our primary service to be more responsive", 3);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (2, "Login app", "Refresh our login application to meet up with new technology", 4);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (2, "Welcoming page", "Renew our company home page", 4);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (2, "Migrate database", "Perform database migration and check security issues", 5);
+
+-- add few issues to Done list
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (3, "Introduce yourself", "Like above, plus ask your team if they need any help, excercise", 1);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (3, "New service", "Our product owner wants new service to be included, check emails", 5);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (3, "Server maintenance", "Setup new server", 5);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (3, "Cleanup", "Perform code cleanup", 3);
+INSERT INTO ISSUES (ISSUESLIST_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES (3, "Recruitment", "Cooperate with HR in recrutiation process", 4);
+
+COMMIT;
