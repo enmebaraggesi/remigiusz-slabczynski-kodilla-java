@@ -6,7 +6,7 @@ public final class Pizza {
 
     private final String bottom;
     private final String sauce;
-    private List<String> ingredients = new ArrayList<>();
+    private List<String> ingredients;
 
     private Pizza(final String bottom, final String sauce, List<String> ingredients) {
         this.bottom = bottom;
