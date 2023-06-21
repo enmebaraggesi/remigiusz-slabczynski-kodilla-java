@@ -17,11 +17,7 @@ class InputProcessorTestSuite {
 
         //When
         String input = "1,2,3";
-        try {
-            tested.processPlayerInput(input);
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        tested.processPlayerInput(input);
         SudokuElement expected = new SudokuElement();
         expected.initializeElement();
         expected.setValue(3);
