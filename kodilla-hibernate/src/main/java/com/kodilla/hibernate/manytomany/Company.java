@@ -5,6 +5,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.*;
 
+@NamedNativeQuery(
+    name = "Company.findCompaniesStartingWithThreeLetters",
+    query = "SELECT * FROM COMPANIES " +
+        " WHERE UPPER(SUBSTRING(COMPANY_NAME, 1, 3)) = UPPER(:LETTERS)",
+    resultClass = Company.class
+)
 @Entity
 @Table(name = "COMPANIES")
 public class Company {

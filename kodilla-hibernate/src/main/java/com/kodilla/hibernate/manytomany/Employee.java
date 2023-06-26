@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.*;
 
+@NamedQuery(
+    name = "Employee.findEmployeesWithLastname",
+    query = "FROM Employee WHERE UPPER(lastname) = UPPER(:SEARCHED)"
+)
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee {
